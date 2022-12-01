@@ -7,11 +7,31 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="loadNotes($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+ <ion-list>
+  <ng-container *ngFor="let note of this.notes;let i=index">
+  <ion-item-sliding *ngIf="!note.hided">
+    <ion-item-options side="start" >
+      <ion-item-option color="primary" (click)="this.editNote(note)">
+        <ion-icon slot="icon-only" name="pencil" style="zoom:1.25"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <ion-item>
+      <ion-label><h2>{{note.title}}</h2><p>{{note.description}}</p></ion-label>
+    </ion-item>
+
+    <ion-item-options side="end" (ionSwipe)="this.deleteNote(note)">
+      <ion-item-option color="danger" expandable (click)="this.deleteNote(note)">
+        <ion-icon slot="icon-only" name="trash" style="zoom:1.25"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+</ng-container>
+ </ion-list>
+ <ion-infinite-scroll #infinitescroll (ionInfinite)="loadMoreNotes($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
 </ion-content>
