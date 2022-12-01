@@ -10,9 +10,10 @@ import {AngularFireModule} from '@angular/fire/compat'
 import { environment } from 'src/environments/environment';
 import { NotesService } from './services/notes.service';
 import { UiService } from './services/ui.service';
+import { EditPipe } from './pages/edit.pipe';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, EditPipe],
   imports: [
     BrowserModule, 
     IonicModule.forRoot(), 
