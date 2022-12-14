@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { InfiniteScrollCustomEvent, IonInfiniteScroll } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { Note } from '../model/note';
+import { EditPage } from '../pages/edit/edit.page';
 import { NotesService } from '../services/notes.service';
 import { UiService } from '../services/ui.service';
 
@@ -13,7 +14,8 @@ export class Tab1Page implements OnInit {
   @ViewChild('infinitescroll') infinitescroll : ElementRef;
   public notes:Note[] =[];
   constructor(private noteS:NotesService,
-    private uiS:UiService) {
+    private uiS:UiService,
+    private modalCtrl: ModalController) {
 
   }
   async ngOnInit(){
@@ -26,8 +28,27 @@ export class Tab1Page implements OnInit {
     this.notes = await this.noteS.getNotes(true);
     this.uiS.hideLoading();*/
   }
-  public editNote(note:Note){
+  public async editNote(note:Note){
+    const modal = await this.modalCtrl.create({
+      component: EditPage,
+      componentProps:{data:note}
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    if(!role){
+      //actualizar
+      this.notes=this.notes.map((e)=>{
+        if(e.id==data.id){
+          return data;
+        }else{
+          return e;
+        }
+      })
+    }
+    console.log(data);
     
+
   }
   public async loadNotes(event){
     this.notes = await this.noteS.getNotes(true);
